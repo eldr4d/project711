@@ -18,13 +18,21 @@ Now get virtualenvwrapper (so we can maintain where the venv is created)
 ```
 pip install virtualenvwrapper
 ```
-Now run the setup.sh script (you may need to modify the permissions using `chmod +777 setup.sh`
+Now run the setup.sh script (you may need to modify the permissions using `chmod +777 setup.sh`)
+```
+./setup.sh
+```
 
-Now, whenever you want to execute a python script, load up the virtual environment by typing
+Now, whenever you want to execute a python script, first load up the virtual environment by typing
 ```
 workon cmsc711project
 ```
-and exit the virtual environment with
+You can now call python on whatever you want, i.e.
+```
+python myfile.py
+```
+
+Exit the virtual environment with
 ```
 deactivate
 ```
