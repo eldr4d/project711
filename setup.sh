@@ -12,6 +12,14 @@ $line1
 $line2
 $line3
 
+source /usr/local/bin/virtualenvwrapper.sh
+
 source $bashrc
 
 mkvirtualenv cmsc711project
+
+workon cmsc711project
+
+pip install -r requirements.txt
+
+deactivate
