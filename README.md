@@ -4,7 +4,7 @@ In this project we will analyze the king latency dataset for determining close p
 ## Installation
 Create a directory `./Data/`
 
-Download the measurements.gz file from [here](https://pdos.csail.mit.edu/archive/p2psim/kingdata/) into the newly created ./Data/ directory
+Download the measurements.gz file from [here](https://pdos.csail.mit.edu/archive/p2psim/kingdata/) into the newly created `./Data/` directory
 Extract the measurements file in the `./Data/` directory, and rename it `measurements`.
 Now install pip
 ```
@@ -28,3 +28,9 @@ and exit the virtual environment with
 ```
 deactivate
 ```
+At this point, you should be able to execute the following:
+```
+workon cmsc711project
+python ./test/firstline.py
+```
+now you should see the first line of the measurements file printed to the console.
