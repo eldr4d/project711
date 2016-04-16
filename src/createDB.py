@@ -41,21 +41,24 @@ except Exception as e:
 
 
 
-
-
+limit=100000
 
 
 with open('../Data/measurements', 'r') as f:
     for line in f:
-		tokens = line.split()
-		src=tokens[0]
-		dest=tokens[2]
-		t1 = int(tokens[4])
-		t2 = int(tokens[5])
-		if t1 > 0 and t2 > 0:
-			time= t1 - t2
-			time=str(time)
-			cur.execute("INSERT INTO Measurements (src, dest, time) VALUES (%s, %s, %s)", (src, dest, time))
+		if limit > 0:
+			tokens = line.split()
+			src=tokens[0]
+			dest=tokens[2]
+			t1 = int(tokens[4])
+			t2 = int(tokens[5])
+			if t1 > 0 and t2 > 0:
+				limit = limit-1
+				time= t1 - t2
+				time=str(time)
+				cur.execute("INSERT INTO Measurements (src, dest, time) VALUES (%s, %s, %s)", (src, dest, time))
+		else:
+			break
 			
 
 

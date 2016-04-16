@@ -11,11 +11,18 @@ Now, create a postgreSQL database with the name `cmsc711` and password `cmsc711`
 ```
 createuser -U postgres -d -P cmsc711
 ```
-Noe create a database under that user
+Now create a database under that user
 ```
 createdb -U cmsc711 -O cmsc711 king
 ```
-If you get an error about peer authentication failure, go here [here](http://stackoverflow.com/questions/18664074/getting-error-peer-authentication-failed-for-user-postgres-when-trying-to-ge)
+If you get an error about peer authentication failure, go here [here](http://stackoverflow.com/questions/18664074/getting-error-peer-authentication-failed-for-user-postgres-when-trying-to-ge).
+
+While youre at it, get psycopg2 to serve as the interface from python to the database
+
+```
+sudo apt-get install python-psycopg2
+```
+
 Now install pip
 ```
 sudo apt-get install pip
@@ -51,3 +58,15 @@ At this point, you should be able to execute the following without any errors:
 ./test/test.sh
 ```
 Now you should see the first line of the measurements file printed to the console.
+
+Time to import the data from the measurements file to the database. 
+```
+workon cmsc711project
+cd ./src
+python createDB.py
+```
+This will take some time because it creates a table `Measurements` and then parses each line from the measurements file into this new table.
+Currently, the limit in the `createDB.py` file is the first 100000 lines in the measurements file (there are about 97 million lines total)
+
+
+
