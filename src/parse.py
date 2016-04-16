@@ -18,22 +18,31 @@ def establish_db_connection():
 		print(e)
 
 def match_on_src(src, cur):
-	cur.execute("SELECT * FROM Measurements WHERE src = %s", (src,))
+	cur.execute("SELECT * FROM measurements WHERE src = %s;", (src,))
 	results = []
 	for record in cur:
-		results.append(Edge(record[0], record[1], int(record[2])))
+		results.append(Edge(record[1], record[2], int(record[3])))
 	return results
 	
 def match_on_dest(dest, cur):
-	cur.execute("SELECT * FROM Measurements WHERE dest = %s", (dest,))
+	cur.execute("SELECT * FROM measurements WHERE dest = %s;", (dest,))
 	results = []
 	for record in cur:
-		results.append(Edge(record[0], record[1], int(record[2])))
+		results.append(Edge(record[1], record[2], int(record[3])))
 	return results
 	
 def get_edges(x, y, cur):
-	cur.execute("SELECT * FROM Measurements WHERE (src = %s AND dest = %s) OR (src = %s AND dest = %s)", (x, y, y, x, ))
+	cur.execute("SELECT * FROM measurements WHERE (src = %s AND dest = %s) OR (src = %s AND dest = %s);", (x, y, y, x, ))
 	results = []
 	for record in cur:
-		results.append(Edge(record[0], record[1], int(record[2])))
+		results.append(Edge(record[1], record[2], int(record[3])))
+	return results
+	
+
+#this gives the destination nodes that have the 
+def get_highest_in_nodes(limit, cur):
+	cur.execute("with t as (select distinct src, dest from measurements) select dest, count(dest) from t group by dest order by count(dest) desc limit %s;", (limit,))
+	results = []
+	for record in cur:
+		results.append(record)
 	return results

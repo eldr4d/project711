@@ -14,5 +14,9 @@ srcs = parse.match_on_dest(testdest, cur);
 
 testother = "12.104.199.65"
 edges = parse.get_edges(testsrc, testdest, cur)
-for d in edges:
+#for d in edges:
+#	print(d)
+
+innodes = parse.get_highest_in_nodes(10, cur)
+for d in innodes:
 	print(d)
