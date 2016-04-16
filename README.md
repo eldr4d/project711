@@ -2,7 +2,9 @@
 In this project we will analyze the king latency dataset for determining close proximity servers.
 
 ## Installation
-First install pip
+Download the measurements.gz file from [here](https://pdos.csail.mit.edu/archive/p2psim/kingdata/)
+Extract the measurements file, and call it "measurements".
+Now install pip
 ```
 sudo apt-get install pip
 ```
