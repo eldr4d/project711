@@ -6,6 +6,16 @@ Create a directory `./Data/`
 
 Download the measurements.gz file from [here](https://pdos.csail.mit.edu/archive/p2psim/kingdata/) into the newly created `./Data/` directory
 Extract the measurements file in the `./Data/` directory, and rename it `measurements`.
+
+Now, create a postgreSQL database with the name `cmsc711` and password `cmsc711`
+```
+createuser -U postgres -d -P cmsc711
+```
+Noe create a database under that user
+```
+createdb -U cmsc711 -O cmsc711 king
+```
+If you get an error about peer authentication failure, go here [here](http://stackoverflow.com/questions/18664074/getting-error-peer-authentication-failed-for-user-postgres-when-trying-to-ge)
 Now install pip
 ```
 sudo apt-get install pip
