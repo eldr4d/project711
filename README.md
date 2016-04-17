@@ -69,4 +69,12 @@ This will take some time because it creates a table `Measurements` and then pars
 Currently, the limit in the `createDB.py` file is the first 100000 lines in the measurements file (there are about 97 million lines total)
 
 
+Collect locations for each ip
+
+First install the following external library [ipinfodb](http://http://ipinfodb.com/)
+pip install git+git://github.com/markmossberg/pyipinfodb.git
+
+You can use this API key but it will be better if you create an acount and generate a new one.
+API key 7bc84207e8b13e67b546b6857459aa263ffc5ce7fd9ca12af653de66015ca988
+
 
