@@ -46,3 +46,11 @@ def get_highest_in_nodes(limit, cur):
 	for record in cur:
 		results.append(record)
 	return results
+
+#this gives the geolocation of an ip address
+def get_geolocation_lat_long(ip, cur):
+	cur.execute("SELECT latitude, longtitude FROM locations WHERE ip = %s;", (ip,))
+	results = []
+	for record in cur:
+		results.append(record)
+	return results

@@ -77,4 +77,15 @@ pip install git+git://github.com/markmossberg/pyipinfodb.git
 You can use this API key but it will be better if you create an acount and generate a new one.
 API key 7bc84207e8b13e67b546b6857459aa263ffc5ce7fd9ca12af653de66015ca988
 
+In order to find the distance between two locations we use the [geopy](https://pypi.python.org/pypi/geopy) library.
+
+In order to install this library run
+```
+pip install geopy
+```
+
+Load the locations table:
+
+psql -f locations.sql king
+
 
