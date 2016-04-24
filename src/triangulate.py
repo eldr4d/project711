@@ -17,8 +17,8 @@ cur = conn.cursor()
 
 
 
-
-def mean_time(edges): 
+def mean_time(edges):
+	"""given a list of Edge objects, return the mean time""" 
 	t=0.0
 	for e in edges:
 		t = t + e.time
@@ -27,7 +27,7 @@ def mean_time(edges):
 
 
 def bootstrap(first, second, third):
-	
+	"""Set up a cartesian coordinate system from 3 initial servers. the first argument will be at (0,0)"""
 	e12 = parse.get_edges(first, second, cur)
 	d12 = 0.0
 	if len(e12) > 0:
@@ -83,18 +83,13 @@ def bootstrap(first, second, third):
 
 
 def triangulate(times):
+	"""given times to the bootsrap servers, return the coordinates"""
 	r1 = times.get(0)
 	r2 = times.get(1)
 	r3 = times.get(2)
 	d = bootstraps[1].get('x')
 	i = bootstraps[2].get('x')
 	j = bootstraps[2].get('y')
-	print(r1)
-	print(r2)
-	print(r3)
-	print(d)
-	print(i)
-	print(j)
 	x = (r1*r1 - r2*r2 + d*d) / (2*d)
 	y = (r1*r1 - r3*r3 + i*i +j*j) / (2*j) - (i*x/j)
 	return x,y
@@ -102,6 +97,7 @@ def triangulate(times):
 	
 
 def add_server(s):
+	"""adds an i3 server with coordinates based on triangulation from the bootsrap servers""" 
 	times = {}
 	
 	for idx, val in enumerate(bootstraps):
