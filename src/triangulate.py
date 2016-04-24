@@ -13,7 +13,6 @@ cur = conn.cursor()
 
 #TODO:
 #come up with outlier tolerance
-#determine accuracy of closest nodes
 #remove client
 #remove server
 #change bootstraps
@@ -163,7 +162,42 @@ def add_client(c):
 	newc['y'] = y
 	newc['server'] = s
 	clients[c] = newc
-	print("Closest server to " + c + " is " + s)
+	#print("Closest server to " + c + " is " + s)
+
+def find_true_closest(client):
+	"""given a client, find the server that is actually closest"""
+	closest = None
+	mindist = 1000000000.0
+	for key, value in i3servers.iteritems():
+		edges = parse.get_edges(client, key, cur)
+		t = mean_time(edges)
+		if t < mindist:
+			mindist = t
+			closest = key
+	
+	return closest
+
+def update_true_closest(client):
+	"""updates the true closest server for a client"""
+	(clients.get(client))['true'] = find_true_closest(client)
+	
+
+def update_all_true_closest():
+	"""updates the true closest values of all the clients"""
+	for key, value in clients.iteritems(): 
+		update_true_closest(key)
+
+def calculate_accuracy():
+	"""returns the percentage of closest server approximations that were correct"""
+	total = 0.0
+	correct = 0.0
+	for key, value in clients.iteritems(): 
+		total = total + 1
+		if value.get('true') == value.get('server'):
+			correct = correct + 1
+	
+	return correct / total
+			
 	
 	
 primary = "195.195.56.2"
@@ -179,6 +213,11 @@ bootstrap(primary, secondary, ternary)
 add_server(add)
 
 add_client(client)
+
+update_all_true_closest()
+
+print(calculate_accuracy())
+
 
 
 
