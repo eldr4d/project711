@@ -83,17 +83,44 @@ limit=1000
 skip=1000000
 mode=1
 
+values = ['133.16.26.30',
+ '210.188.160.3',
+ '217.199.96.82',
+ '61.114.80.2',
+ '163.118.134.1',
+ '200.43.7.2',
+ '170.147.45.164',
+ '202.50.90.1',
+ '130.226.56.68',
+ '209.124.64.13',
+ '200.230.190.107',
+ '12.10.83.40',
+ '195.195.56.2',
+ '208.35.201.3',
+ '63.144.10.200',
+ '207.179.200.10',
+ '208.233.32.12',
+ '200.68.178.3',
+ '193.243.229.111',
+ '194.183.64.11']
+
+
 
 with open('../Data/measurements', 'r') as f:
     for line in f:
 		if mode == 1:
 			tokens = line.split()
-			src=tokens[0]
-			dest=tokens[2]
-			t1 = int(tokens[4])
-			t2 = int(tokens[5])
-			if t1 > 0 and t2 > 0:
-				limit = limit-1
+			try:
+				src=tokens[0]
+				dest=tokens[2]
+				t1 = int(tokens[4])
+				t2 = int(tokens[5])
+			except Exception as e:
+				print("Bad Line")
+				print(line)
+				continue
+			if src in values and dest in values and t1 > 0 and t2 > 0 and (t1 - t2) > 0:
+				#limit = limit-1
 				time= t1 - t2
 				time=str(time)
 				cur.execute("INSERT INTO measurements (src, dest, time) VALUES (%s, %s, %s)", (src, dest, time))
