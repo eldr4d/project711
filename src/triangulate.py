@@ -6,20 +6,15 @@ from geopy.geocoders import Nominatim
 from geopy.distance import vincenty
 
 
-i3servers = {}
-clients = {}
+i3servers = {} #dictionary of all registered servers
+clients = {} #dictionary of all registered clients
 bootstraps = [] #to be triangulated from when adding a node
 conn = parse.establish_db_connection()
 cur = conn.cursor()
 
 #TODO:
 #come up with outlier tolerance
-#update closest upon server removal/entry
-
-
-
-
-
+#run through some tests to determine accuracy
 
 
 def bootstrap(first, second, third):
@@ -231,14 +226,14 @@ def add_server(s):
 	"""adds an i3 server with coordinates based on triangulation from the bootsrap servers""" 
 	x,y = find_client_coords(s) #sic. find_client_coords returns coordinates regardless of whether its a client or not
 	if x==None or y==None:
-		print("Couldn't add server " + s)
+		print("ERROR: Couldn't add server " + s)
 		return
 	news = {}
 	news['ip'] = s
 	news['x'] = x
 	news['y'] = y
 	i3servers[s] = news
-	print("New server " + s + " is at ("+str(x)+", "+str(y)+")")
+	#print("New server " + s + " is at ("+str(x)+", "+str(y)+")")
 
 def remove_server(s):
 	"""given a server, removes it from the list of servers and bootstraps if applicable. updates any affected clients"""
@@ -277,7 +272,7 @@ def add_client(c):
 
 	x,y = find_client_coords(c)
 	if x==None or y==None:
-		print("Couldn't add client " + c)
+		print("ERROR: Couldn't add client " + c)
 		return
 	
 	
@@ -290,9 +285,9 @@ def add_client(c):
 	s = update_closest_server(c)
 	t = update_true_closest(c)
 	
-	print("New client " + c + " is at ("+str(x)+", "+str(y)+")")
-	print("Registered server to " + c + " is " + s)
-	print("Closest server to " + c + " is " + t)
+	#print("New client " + c + " is at ("+str(x)+", "+str(y)+")")
+	#print("Registered server to " + c + " is " + s)
+	#print("Closest server to " + c + " is " + t)
 
 
 def remove_client(c):
@@ -313,37 +308,29 @@ def calculate_accuracy():
 
 ########################################################################
 ######################## END LIBRARY BEGIN MAIN ########################
-########################################################################	
+########################################################################
 
-primary = "195.195.56.2"
-secondary = "133.16.26.30"
-ternary = "170.147.45.164"
+def simple_test():
+	"""just a simple test function before i write more extensive tests"""	
 
-client = "61.114.80.2"
-
-add = "193.243.229.111"
-
-bootstrap(primary, secondary, ternary)
-
-add_server(add)
-
-add_client(client)
-
-print(clients.get(client))
-
-remove_server(secondary)
-
-print(clients.get(client))
-
-
-
-print(calculate_accuracy())
+	primary = "195.195.56.2"
+	secondary = "133.16.26.30"
+	ternary = "170.147.45.164"
+	client = "61.114.80.2"
+	add = "193.243.229.111"
+	bootstrap(primary, secondary, ternary)
+	add_server(add)
+	add_client(client)
+	print(clients.get(client))
+	remove_server(secondary)
+	print(clients.get(client))
+	print(calculate_accuracy())
 
 
 
 
 	
-
+simple_test()
 	
 	
 
