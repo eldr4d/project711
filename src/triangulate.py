@@ -6,13 +6,18 @@ from geopy.distance import vincenty
 
 
 i3servers = {}
+clients = {}
 bootstraps = [] #to be triangulated from when adding a node
 conn = parse.establish_db_connection()
 cur = conn.cursor()
 
 #TODO:
 #come up with outlier tolerance
-#given a client, find closest server
+#determine accuracy of closest nodes
+#remove client
+#remove server
+#change bootstraps
+#update closest upon server removal/entry
 
 
 
@@ -94,10 +99,8 @@ def triangulate(times):
 	y = (r1*r1 - r3*r3 + i*i +j*j) / (2*j) - (i*x/j)
 	return x,y
 	
-	
-
-def add_server(s):
-	"""adds an i3 server with coordinates based on triangulation from the bootsrap servers""" 
+def time_to_bootstraps(s):
+	"""returns the times from a given server to the bootstrap servers"""
 	times = {}
 	
 	for idx, val in enumerate(bootstraps):
@@ -109,7 +112,16 @@ def add_server(s):
 			print("WARNING: No edges exist between the new server bootstrap" + str(idx))
 	if len(times) < 3:
 		print("ERROR: Couldn't find 3 or more bootstrapping servers");
+		return None
 	
+	return times
+				
+
+def add_server(s):
+	"""adds an i3 server with coordinates based on triangulation from the bootsrap servers""" 
+	times = time_to_bootstraps(s)
+	if times == None:
+		return
 	x,y = triangulate(times)
 	news = {}
 	news['ip'] = s
@@ -117,22 +129,59 @@ def add_server(s):
 	news['y'] = y
 	i3servers[s] = news
 	
+def distance(x1, y1, x2, y2):
+	"""computes the euclidean distance between two coordinates"""
+	return math.sqrt((x1-x2)*(x1-x2) + (y1-y2)*(y1-y2))
+	
+def find_closest_server(x, y):
+	"""given a coordinate, returns the ip of the closest i3 server"""
+	closest = None
+	mindist = 1000000000.0
+	for key, value in i3servers.iteritems():
+		sx = value.get('x')
+		sy = value.get('y')
+		#print("("+str(sx)+", "+str(sy)+")")
+		dist = distance(x, y, sx, sy)
+		if dist < mindist:
+			mindist = dist
+			closest = key
+	
+	return closest	
+
+	
+def add_client(c):
+	"""computes the coordinates of a new client, and the closest server"""
+	times = time_to_bootstraps(c)
+	if times == None:
+		return
+	x,y = triangulate(times)
+	#print("New client is at ("+str(x)+", "+str(y)+")")
+	s = find_closest_server(x, y)
+	newc = {}
+	newc['ip'] = c
+	newc['x'] = x
+	newc['y'] = y
+	newc['server'] = s
+	clients[c] = newc
+	print("Closest server to " + c + " is " + s)
 	
 	
-		
+primary = "195.195.56.2"
+secondary = "133.16.26.30"
+ternary = "170.147.45.164"
 
+client = "61.114.80.2"
 
-
-primary="195.195.56.2"
-secondary="133.16.26.30"
-ternary="170.147.45.164"
+add = "193.243.229.111"
 
 bootstrap(primary, secondary, ternary)
-#print(bootstraps)
-
-add="193.243.229.111"
 
 add_server(add)
+
+add_client(client)
+
+
+
 	
 
 	

@@ -32,7 +32,7 @@ def match_on_dest(dest, cur):
 	return results
 	
 def get_edges(x, y, cur):
-	cur.execute("SELECT * FROM measurements WHERE (src = %s AND dest = %s) OR (src = %s AND dest = %s);", (x, y, y, x, ))
+	cur.execute("SELECT * FROM measurements WHERE (src = %s AND dest = %s) OR (src = %s AND dest = %s) limit 5;", (x, y, y, x, ))
 	results = []
 	for record in cur:
 		results.append(Edge(record[1], record[2], int(record[3])))
