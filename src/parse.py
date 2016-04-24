@@ -54,3 +54,11 @@ def get_geolocation_lat_long(ip, cur):
 	for record in cur:
 		results.append(record)
 	return results
+
+def mean_time(edges):
+	"""given a list of Edge objects, return the mean time""" 
+	t=0.0
+	for e in edges:
+		t = t + e.time
+	t = t / len(edges)
+	return t
