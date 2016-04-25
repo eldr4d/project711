@@ -62,3 +62,23 @@ def mean_time(edges):
 		t = t + e.time
 	t = t / len(edges)
 	return t
+
+#Given an IP address it returns an array containing the closest geographically server and the latency to that server
+#The latency is calculated by taking the mean of all the latencies inside the dataset
+#Return type -> [origin_ip, dest_ip, distance_in_miles, latency]
+def get_closest_geo(x, cur):
+  cur.execute("SELECT src, dest, distance from colocations where src = %s order by distance limit 1", (x, ));
+  result = cur.fetchall()
+  cur.execute("select avg from (select src, dest, avg(time) from measurements where "+ 
+              " src = %s and dest = %s group by src, dest) as t order by avg limit 1", (x, result[0][1]))
+  dist_min =  cur.fetchall()
+  return [x, result[0][1], result[0][2], dist_min[0][0]]
+
+#Given an IP address it returns an array containing the closest server by means of latency
+#The latency is calculated by taking the mean of all the latencies inside the dataset
+#Return type -> [origin_ip, dest_ip, latency]
+def get_actual_closest(x, cur):
+  cur.execute("select src, dest, avg from (select src, dest, avg(time) from measurements where "+ 
+              " src = %s group by src, dest) as t order by avg limit 1", (x,))
+  actual_min = cur.fetchall()
+  return actual_min[0]
