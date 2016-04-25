@@ -21,21 +21,21 @@ def match_on_src(src, cur):
 	cur.execute("SELECT * FROM measurements WHERE src = %s;", (src,))
 	results = []
 	for record in cur:
-		results.append(Edge(record[1], record[2], int(record[3])))
+		results.append(Edge(record[1], record[2], float(record[3])))
 	return results
 	
 def match_on_dest(dest, cur):
 	cur.execute("SELECT * FROM measurements WHERE dest = %s;", (dest,))
 	results = []
 	for record in cur:
-		results.append(Edge(record[1], record[2], int(record[3])))
+		results.append(Edge(record[1], record[2], float(record[3])))
 	return results
 	
 def get_edges(x, y, cur):
 	cur.execute("SELECT * FROM measurements WHERE (src = %s AND dest = %s) OR (src = %s AND dest = %s) limit 5;", (x, y, y, x, ))
 	results = []
 	for record in cur:
-		results.append(Edge(record[1], record[2], int(record[3])))
+		results.append(Edge(record[1], record[2], float(record[3])))
 	return results
 	
 
