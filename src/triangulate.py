@@ -12,11 +12,19 @@ bootstraps = [] #to be triangulated from when adding a node
 conn = parse.establish_db_connection()
 cur = conn.cursor()
 
-#TODO:
-#come up with outlier tolerance
-#run through some tests to determine accuracy
+"""
+The core functionality is defined in bootstrap, and then the following functions are available to call
+add_server
+add_client
+remove_server
+remove_client
 
+All of these functions (including bootstrap) take ip addresses in string form as their parameters. 
+Additionally, there is a calculate accuracy function that determines what percentage of the server
+selection based on triangulation was actually the best possible server
+"""
 
+#this is the function that needs to be called before anything else. it is essentially setup.
 def bootstrap(first, second, third):
 	"""Set up a cartesian coordinate system from 3 initial servers. the first argument will be at (0,0)"""
 	e12 = parse.get_edges(first, second, cur)
