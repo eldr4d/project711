@@ -22,6 +22,8 @@ remove_client
 All of these functions (including bootstrap) take ip addresses in string form as their parameters. 
 Additionally, there is a calculate accuracy function that determines what percentage of the server
 selection based on triangulation was actually the best possible server
+
+A simple usage is shown at the bottom in the simple_test function
 """
 
 #this is the function that needs to be called before anything else. it is essentially setup.
