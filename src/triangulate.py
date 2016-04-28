@@ -344,6 +344,3 @@ class TriangulationNet:
 		print(self.calculate_accuracy())
 
 
-	
-t = TriangulationNet()
-t.simple_test()
