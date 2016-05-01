@@ -20,6 +20,9 @@ Additionally, there is a calculate accuracy function that determines what percen
 selection based on triangulation was actually the best possible server
 
 A simple usage is shown at the bottom in the simple_test function
+
+TODO:
+Add new bootstraping when bootstrap gets deleted
 """
 
 
@@ -205,10 +208,11 @@ class TriangulationNet:
 		mindist = 1000000000.0
 		for key, value in self.i3servers.iteritems():
 			edges = parse.get_edges(client, key, self.cur)
-			t = parse.mean_time(edges)
-			if t < mindist:
-				mindist = t
-				closest = key
+			if len(edges) > 0:
+				t = parse.mean_time(edges)
+				if t < mindist:
+					mindist = t
+					closest = key
 		
 		return closest
 	
@@ -231,11 +235,18 @@ class TriangulationNet:
 		self.update_closest_server(c)
 		self.update_true_closest(c)
 		
-	
 	def update_all_clients(self):
 		"""updates the true closest values of all the self.clients"""
 		for key, value in self.clients.iteritems(): 
-			self.update_client(c)
+			self.update_client(key)
+	
+	def update_all_closest(self):
+		for key, value in self.clients.iteritems(): 
+			self.update_closest_server(key)
+	
+	def update_all_true(self):
+		for key, value in self.clients.iteritems(): 
+			self.update_true_closest(key)
 		
 ########################################################################
 	
@@ -250,6 +261,7 @@ class TriangulationNet:
 		news['x'] = x
 		news['y'] = y
 		self.i3servers[s] = news
+		self.update_all_closest()
 		#print("New server " + s + " is at ("+str(x)+", "+str(y)+")")
 	
 	def remove_server(self, s):
@@ -316,12 +328,33 @@ class TriangulationNet:
 		"""returns the percentage of closest server approximations that were correct"""
 		total = 0.0
 		correct = 0.0
+		error = 0.0
+		self.update_all_true()
 		for key, value in self.clients.iteritems(): 
-			total = total + 1
+			
 			if value.get('true') == value.get('server'):
-				correct = correct + 1
+				total = total + 1.0
+				correct = correct + 1.0
+			else:
+				e1 = parse.get_edges(key, value.get('server'), self.cur)
+				if len(e1) > 0:
+					total = total + 1.0
+					t1 = parse.mean_time(e1)
+					e2 = parse.get_edges(key, value.get('true'), self.cur)
+					t2 = parse.mean_time(e2)
+					error = error + (t1-t2)/t1
 		
-		return correct / total
+		return (correct / total), (error / total)
+		
+
+	def print_status(self):
+		print(self.bootstraps)
+		print("servers:")
+		for key, value in self.i3servers.iteritems():
+			print(key)
+		print("\nclients:")
+		for key, value in self.clients.iteritems():
+			print(key)
 	
 ########################################################################
 ######################## END LIBRARY BEGIN MAIN ########################
