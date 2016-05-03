@@ -156,6 +156,7 @@ with open('../Data/measurements', 'r') as f:
 				time= t1 - t2
 				time=str(time)
 				cur.execute("INSERT INTO measurements (src, dest, time) VALUES (%s, %s, %s)", (src, dest, time))
+				cur.execute("INSERT INTO measurements (src, dest, time) VALUES (%s, %s, %s)", (dest, src, time))
 				cur.execute("INSERT INTO sources (src) SELECT %s WHERE NOT EXISTS (SELECT src FROM sources WHERE src = %s);", (src,src,))
 				cur.execute("INSERT INTO destinations (dest) SELECT %s WHERE NOT EXISTS (SELECT dest FROM destinations WHERE dest = %s);", (dest,dest,))
 			if limit == 0:
