@@ -2,9 +2,6 @@ import parse
 import math
 import numpy
 
-from geopy.geocoders import Nominatim
-from geopy.distance import vincenty
-
 
 
 
@@ -39,26 +36,26 @@ class TriangulationNet:
 	#this is the function that needs to be called before anything else. it is essentially setup.
 	def bootstrap(self, first, second, third):
 		"""Set up a cartesian coordinate system from 3 initial servers. the first argument will be at (0,0)"""
-		e12 = parse.get_edges(first, second, self.cur)
+		e12 = parse.get_edge(first, second, self.cur)
 		d12 = 0.0
 		if len(e12) > 0:
-			d12 = parse.mean_time(e12) 	
+			d12 = e12.time 	
 		else:
 			print("ERROR: No edges exist between the first and second nodes")
 			return
 		
-		e13 = parse.get_edges(first, third, self.cur)
+		e13 = parse.get_edge(first, third, self.cur)
 		d13 = 0.0
 		if len(e13) > 0:
-			d13 = parse.mean_time(e13)
+			d13 = e13.time
 		else:
 			print("ERROR: No edges exist between the first and third nodes")
 			return
 			
-		e23 = parse.get_edges(second, third, self.cur)
+		e23 = parse.get_edge(second, third, self.cur)
 		d23 = 0.0
 		if len(e23) > 0:
-			d23 = parse.mean_time(e23)
+			d23 = e23.time
 		else:
 			print("ERROR: No edges exist between the second and third nodes")
 			return
@@ -131,10 +128,9 @@ class TriangulationNet:
 		times = {}
 		
 		for idx, val in enumerate(self.bootstraps):
-			edges = parse.get_edges(s, val.get('ip'), self.cur)
-			if len(edges) > 0:
-				t = parse.mean_time(edges)
-				times[idx] = t
+			edge = parse.get_edge(s, val.get('ip'), self.cur)
+			if len(edge) > 0:
+				times[idx] = edge.time
 			else:
 				print("WARNING: No edges exist between the new server bootstrap" + str(idx))
 		if len(times) < 3:
@@ -207,9 +203,9 @@ class TriangulationNet:
 		closest = None
 		mindist = 1000000000.0
 		for key, value in self.i3servers.iteritems():
-			edges = parse.get_edges(client, key, self.cur)
-			if len(edges) > 0:
-				t = parse.mean_time(edges)
+			edge = parse.get_edge(client, key, self.cur)
+			if len(edge) > 0:
+				t = edge.time
 				if t < mindist:
 					mindist = t
 					closest = key
@@ -336,12 +332,12 @@ class TriangulationNet:
 				total = total + 1.0
 				correct = correct + 1.0
 			else:
-				e1 = parse.get_edges(key, value.get('server'), self.cur)
+				e1 = parse.get_edge(key, value.get('server'), self.cur)
 				if len(e1) > 0:
 					total = total + 1.0
-					t1 = parse.mean_time(e1)
-					e2 = parse.get_edges(key, value.get('true'), self.cur)
-					t2 = parse.mean_time(e2)
+					t1 = e1.time
+					e2 = parse.get_edge(key, value.get('true'), self.cur)
+					t2 = e2.time
 					error = error + (t1-t2)/t1
 		
 		return (correct / total), (error / total)
