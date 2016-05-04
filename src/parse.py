@@ -42,15 +42,24 @@ def get_edge(x, y, cur):
     return Edge(results[0][0], results[0][1], float(results[0][2]))
   else:
     return []
+
+def get_top_N_nodes(src, dest_list, top_N, cur):
+  cur.execute("SELECT src, dest, avg from (SELECT src, dest, avg(time) "+
+              "FROM measurements WHERE src = %s AND dest = ANY(%s) group by src, dest) as foo order by avg limit %s;", (src, dest_list, top_N))
+  edges = []
+  for result in cur:
+    edges.append(Edge(result[0], result[1], float(result[2])))
+  return edges
   
 
 #this gives the destination nodes that have the 
-def get_highest_in_nodes(limit, cur):
-  cur.execute("with t as (select distinct src, dest from measurements) select dest, count(dest) from t group by dest order by count(dest) desc limit %s;", (limit,))
-  results = []
-  for record in cur:
-    results.append(record)
-  return results
+# BROKEN
+# def get_highest_in_nodes(limit, cur):
+#   cur.execute("with t as (select distinct src, dest from measurements) select dest, count(dest) from t group by dest order by count(dest) desc limit %s;", (limit,))
+#   results = []
+#   for record in cur:
+#     results.append(record)
+#   return results
 
 #this gives the geolocation of an ip address
 def get_geolocation_lat_long(ip, cur):
@@ -87,5 +96,4 @@ def get_actual_closest_from_subset(x, cur, destinations):
   cur.execute("select src, dest, avg from (select src, dest, avg(time) from measurements where "+ 
               " src = %s and dest = ANY(%s) group by src, dest) as t order by avg limit 1", (x, destinations,))
   actual_min = cur.fetchall()
-  print actual_min
   return actual_min[0]
