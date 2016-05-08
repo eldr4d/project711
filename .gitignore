@@ -1,5 +1,5 @@
-# ignore data files
-Data/
+# ignore some data files
+Data/measurements.gz
 
 #ignore a bunch of python files
 

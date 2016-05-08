@@ -7,7 +7,7 @@ import time
 ip_lookup = pyipinfodb.IPInfo('7bc84207e8b13e67b546b6857459aa263ffc5ce7fd9ca12af653de66015ca988')
 
 try:
-    conn=psycopg2.connect("dbname='king' user='cmsc711' host='localhost' password='cmsc711'") 
+    conn=psycopg2.connect("dbname='king' user='cmsc711' host='localhost' password='cmsc711'")
 except Exception as e:
     print("I am unable to connect to the database.")
     print(e)
@@ -15,13 +15,13 @@ except Exception as e:
 cur = conn.cursor()
 cur2 = conn.cursor()
 
-	
+
 try:
 	cur.execute("DROP TABLE locations;")
 	print("dropped existing locations table")
 except:
 	print("There was no existing locations table to drop")
-	
+
 conn.commit()
 
 try:
@@ -32,7 +32,7 @@ try:
 except Exception as e:
 	print("Could not create table locations")
 	print(e)
-	
+
 conn.commit()
 
 cur.execute("SELECT dest from destinations")

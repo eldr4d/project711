@@ -5,7 +5,7 @@ class Edge:
     self.src = src
     self.dest = dest
     self.time = time
-        
+
   def __str__(self):
     return ("Source: " + self.src +", Dest: " + self.dest +
            ", Time: " + str(self.time))
@@ -16,7 +16,7 @@ class Edge:
 def establish_db_connection():
   try:
     conn=psycopg2.connect("dbname='king' user='cmsc711' host='localhost' " +
-                          " password='cmsc711'") 
+                          " password='cmsc711'")
     return conn
   except Exception as e:
     print("I am unable to connect to the database.")
@@ -28,17 +28,17 @@ def match_on_src(src, cur):
   for record in cur:
     results.append(Edge(record[1], record[2], float(record[3])))
   return results
-  
+
 def match_on_dest(dest, cur):
   cur.execute("SELECT * FROM measurements WHERE dest = %s;", (dest,))
   results = []
   for record in cur:
     results.append(Edge(record[1], record[2], float(record[3])))
   return results
-  
+
 def get_edge(x, y, cur):
-  cur.execute("SELECT src, dest, avg(time) FROM measurements WHERE src = %s " +
-              " AND dest = %s group by src, dest;", (x, y, ))
+  cur.execute("SELECT src, dest, time FROM measurements WHERE src = %s " +
+              " AND dest = %s;", (x, y, ))
   results = cur.fetchall()
 
   if(len(results) == 1):
@@ -47,17 +47,15 @@ def get_edge(x, y, cur):
     return []
 
 def get_top_N_nodes(src, dest_list, top_N, cur):
-  cur.execute("SELECT src, dest, avg from (SELECT src, dest, avg(time) "+
-              "FROM measurements WHERE src = %s AND dest = ANY(%s) " +
-              " group by src, dest) as foo order by avg limit %s;",
+  cur.execute("SELECT src, dest, time FROM measurements WHERE src = %s " +
+              " AND dest = ANY(%s) order by time limit %s;",
               (src, dest_list, top_N))
   edges = []
   for result in cur:
     edges.append(Edge(result[0], result[1], float(result[2])))
   return edges
-  
 
-#this gives the destination nodes that have the 
+#this gives the destination nodes that have the
 # BROKEN
 # def get_highest_in_nodes(limit, cur):
 #   cur.execute("with t as (select distinct src, dest from measurements) " +
@@ -86,9 +84,8 @@ def get_closest_geo(x, cur):
   cur.execute("SELECT src, dest, distance from colocations where src = %s " +
               " order by distance limit 1", (x, ));
   result = cur.fetchall()
-  cur.execute("select avg from (select src, dest, avg(time) from " 
-              "measurements where src = %s and dest = %s group by src, dest) " +
-              "as t order by avg limit 1", (x, result[0][1]))
+  cur.execute("select time from measurements where src = %s and dest = %s",
+              (x, result[0][1]))
   dist_min =  cur.fetchall()
   return [x, result[0][1], result[0][2], dist_min[0][0]]
 
@@ -103,9 +100,7 @@ def get_closest_geo_from_subset(x, destinations, cur):
               (x, destinations, ));
   results = cur.fetchall()
   for result in results:
-    cur.execute("select avg from (select src, dest, avg(time) from " +
-                " measurements where src = %s and dest = %s " +
-                "group by src, dest) as t order by avg limit 1",
+    cur.execute("select time from measurements where src = %s and dest = %s",
                 (x, result[1]))
     latency_min =  cur.fetchall()
     if(len(latency_min) == 0):
@@ -119,9 +114,8 @@ def get_closest_geo_from_subset(x, destinations, cur):
 # the dataset
 #Return type -> [origin_ip, dest_ip, latency]
 def get_actual_closest(x, cur):
-  cur.execute("select src, dest, avg from (select src, dest, avg(time) " +
-              "from measurements where src = %s group by src, dest) as t " +
-              " order by avg limit 1", (x,))
+  cur.execute("select src, dest, time from measurements where src = %s " +
+              "order by time limit 1", (x,))
   actual_min = cur.fetchall()
   return actual_min[0]
 
@@ -131,9 +125,8 @@ def get_actual_closest(x, cur):
 # the dataset
 # Return type -> [origin_ip, dest_ip, latency]
 def get_actual_closest_from_subset(x, destinations, cur):
-  cur.execute("select src, dest, avg from (select src, dest, avg(time) " +
-              "from measurements where src = %s and dest = ANY(%s) " +
-              "group by src, dest) as t order by avg limit 1",
+  cur.execute("select src, dest, time from measurements where src = %s and " +
+              " dest = ANY(%s) order by time limit 1",
               (x, destinations,))
   actual_min = cur.fetchall()
   return actual_min[0]

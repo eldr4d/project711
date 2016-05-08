@@ -7,7 +7,7 @@ from geopy.geocoders import Nominatim
 from geopy.distance import vincenty
 
 try:
-    conn=psycopg2.connect("dbname='king' user='cmsc711' host='localhost' password='cmsc711'") 
+    conn=psycopg2.connect("dbname='king' user='cmsc711' host='localhost' password='cmsc711'")
 except Exception as e:
     print("I am unable to connect to the database.")
     print(e)
@@ -22,7 +22,7 @@ try:
   print("dropped existing colocations table")
 except:
   print("There was no existing colocations table to drop")
-  
+
 conn.commit()
 
 try:
@@ -31,7 +31,7 @@ try:
 except Exception as e:
   print("Could not create table colocations")
   print(e)
-  
+
 conn.commit()
 
 cur.execute("SELECT id, ip, longtitude, latitude from locations;")
@@ -42,7 +42,7 @@ for record in cur:
   cur2.execute("SELECT id, ip, longtitude, latitude FROM locations WHERE id > %s;", (record[0],))
   for record2 in cur2:
     gloc2 = (float(record2[2]), float(record2[3]))
-  
+
     dist = vincenty(gloc1, gloc2).miles
     # Add both pairs for easier lookup
     cur3.execute("INSERT INTO colocations (src, dest, distance) VALUES (%s, %s, %s)",
