@@ -18,6 +18,7 @@ def evaluate_triangulate():
 	clients = configs['clients']
 	servers = configs['servers']
 	t.bootstrap(bootstraps[0], bootstraps[1], bootstraps[2])
+	total_num = len(bootstraps) + len(servers)
 	i = 3
 	numbers = []
 	for c in clients:
@@ -43,9 +44,10 @@ def evaluate_triangulate():
 	plt.title("Accuracy During Server Addition")
 	plt.xlabel("Number of i3 Servers")
 	plt.ylabel("Accuracy (Green) / Relative Error (Red)")
-	
+	plt.axis([3, total_num, 0, 1])
 	#print(accuracy)
 	#print(error)
+	"""
 	accuracy = []
 	numbers = []
 	error = []
@@ -70,7 +72,7 @@ def evaluate_triangulate():
 	plt.title("Accuracy During Server Removal")
 	plt.xlabel("Number of i3 Servers")
 	plt.ylabel("Accuracy (Green) / Relative Error (Red)")
-	
+	"""
 	plt.show()
 	
 	
