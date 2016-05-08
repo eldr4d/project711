@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 def evaluate_location():
 	accuracy = []
 	error = []
-	with open('config_location.json') as config_file:    
+	with open('config.json') as config_file:    
 		configs = json.load(config_file)
 	
 	clients = configs['clients']

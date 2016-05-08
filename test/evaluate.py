@@ -14,11 +14,10 @@ def evaluate_triangulate():
 	with open('config.json') as config_file:    
 		configs = json.load(config_file)
 	t = tri.TriangulationNet()
-	bootstraps = configs['bootstraps']
 	clients = configs['clients']
 	servers = configs['servers']
-	t.bootstrap(bootstraps[0], bootstraps[1], bootstraps[2])
-	total_num = len(bootstraps) + len(servers)
+	t.bootstrap(servers[0], servers[1], servers[2])
+	total_num = len(servers)
 	i = 3
 	numbers = []
 	for c in clients:
@@ -27,6 +26,8 @@ def evaluate_triangulate():
 	accuracy.append(a)
 	error.append(e)
 	numbers.append(i)
+	
+	servers = servers[3:len(servers)]
 	
 	for s in servers:
 		t.add_server(s)

@@ -63,6 +63,11 @@ class TriangulationNet:
 		
 		
 		cos1 = (d12*d12 + d13*d13 - d23*d23) / (2*d12*d13)
+		if cos1 > 1:
+			cos1 = 1
+		elif cos1 < -1:
+			cos1 = -1
+			
 		theta = math.acos(cos1)
 		
 		origin = {}
