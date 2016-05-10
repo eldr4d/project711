@@ -5,10 +5,11 @@ import json
 import parse
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib.backends.backend_pdf import PdfPages
 
 def evaluate_location():
-	accuracy = []
-	error = []
+	pp = PdfPages('accuracy_loc.pdf')
+
 	with open('test_loc_config.json') as config_file:
 		configs = json.load(config_file)
 
@@ -17,6 +18,8 @@ def evaluate_location():
 
 	cfg = 1
 	for config in configs["tests"]:
+		accuracy = []
+		error = []
 		clients = config['clients']
 		all_servers = config['servers']
 		total_num = len(all_servers)
@@ -83,8 +86,11 @@ def evaluate_location():
 		plt.xlabel("Number of i3 Servers")
 		plt.ylabel("Accuracy (Green) / Relative Error (Red)")
 		plt.axis([3, total_num, 0, 1])
-		plt.show()
+		# plt.show()
+		plt.savefig(pp, format='pdf')
 		cfg = cfg + 1
+
+	pp.close()
 
 evaluate_location()
 

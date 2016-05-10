@@ -232,21 +232,21 @@ class TriangulationNet:
 
 	def update_all_clients(self):
 		"""updates the true closest values of all the self.clients"""
-		for key, value in self.clients.iteritems(): 
+		for key, value in self.clients.iteritems():
 			self.update_client(key)
 
 	def update_all_closest(self):
-		for key, value in self.clients.iteritems(): 
+		for key, value in self.clients.iteritems():
 			self.update_closest_server(key)
 
 	def update_all_true(self):
-		for key, value in self.clients.iteritems(): 
+		for key, value in self.clients.iteritems():
 			self.update_true_closest(key)
 
 ########################################################################
 
 	def add_server(self, s):
-		"""adds an i3 server with coordinates based on triangulation from the bootsrap servers""" 
+		"""adds an i3 server with coordinates based on triangulation from the bootsrap servers"""
 		x,y = self.find_client_coords(s) #sic. find_client_coords returns coordinates regardless of whether its a client or not
 		if x==None or y==None:
 			print("ERROR: Couldn't add server " + s)
