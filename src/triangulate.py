@@ -337,7 +337,10 @@ class TriangulationNet:
 					t2 = e2.time
 					error = error + (t1-t2)/t1
 
-		return (correct / total), (error / total)
+		if total == 0.0:
+			return 1, 1
+		else:
+			return (correct / total), (error / total)
 
 	def print_status(self):
 		print(self.bootstraps)
