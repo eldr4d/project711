@@ -65,6 +65,8 @@ except Exception as e:
   print("Could not create indexes")
   print(e)
 
+conn.commit()
+
 cur.close()
 cur2.close()
 cur3.close()
