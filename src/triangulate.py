@@ -111,7 +111,11 @@ class TriangulationNet:
 		#transform to get circle 2 on x axis
 		ex = (P2 - P1)/(numpy.linalg.norm(P2 - P1))
 		i = numpy.dot(ex, P3 - P1)
-		ey = (P3 - P1 - i*ex)/(numpy.linalg.norm(P3 - P1 - i*ex))
+		denom = numpy.linalg.norm(P3 - P1 - i*ex)
+		if abs(denom) >= 0.00001:
+			denom = 0.00001
+			
+		ey = (P3 - P1 - i*ex)/(denom)
 		ez = numpy.cross(ex,ey)
 		d = numpy.linalg.norm(P2 - P1)
 		j = numpy.dot(ey, P3 - P1)
@@ -195,6 +199,9 @@ class TriangulationNet:
 		s = self.find_closest_server(c)
 		(self.clients.get(c))['server'] = s
 		return s
+	
+	#def update_client_with_server(self, c, s):
+		
 
 ########################################################################
 
