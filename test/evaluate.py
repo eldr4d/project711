@@ -58,9 +58,9 @@ def evaluate_triangulate():
 	
 	f1 = plt.figure(1)
 	p1 = plt.plot(numbers, accuracy)
-	plt.setp(p1, linewidth=5, color="g")
+	plt.setp(p1, linewidth=2, color="g")
 	p2 = plt.plot(numbers, error)
-	plt.setp(p2, linewidth=5, color="r")
+	plt.setp(p2, linewidth=2, color="r")
 	plt.title("Average Accuracy During Server Addition")
 	plt.xlabel("Number of i3 Servers")
 	plt.ylabel("Accuracy (Green) / Relative Error (Red)")
@@ -90,16 +90,17 @@ def evaluate_triangulate():
 
 	p=best
 	for i in numbers:
-		density[i-3] = p*((1-p)**(i-3))
+		density[i-3] = total_a*p*((1-p)**(i-3))
+	accuracy = [a * total_a for a in accuracy]
 	f1 = plt.figure(2)
 	p1 = plt.scatter(numbers, accuracy)
 	plt.setp(p1, linewidth=5, color="g")
 	p2 = plt.plot(numbers, mypdf)
 	plt.setp(p2, linewidth=1, color="g")
-	plt.title("Probability of Correct Server Selection")
+	plt.title("Average Accuracy")
 	plt.xlabel("Number of i3 Servers")
-	plt.ylabel("Observed (Green) / Geometric Distribution (Red)")
-	plt.axis([3, len(accuracy)+3, 0, .12])
+	plt.ylabel("Observed (Scatter) / Geometric Fit (Line)")
+	plt.axis([3, len(accuracy)+3, 0, 1])
 	# plt.show()
 	plt.savefig(pp, format='pdf')
 	
