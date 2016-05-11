@@ -1,6 +1,9 @@
 # ignore some data files
 Data/measurements.gz
 
+# ignore images
+*.png
+
 #ignore a bunch of python files
 
 # Byte-compiled / optimized / DLL files
