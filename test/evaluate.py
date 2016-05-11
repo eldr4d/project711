@@ -88,12 +88,12 @@ def evaluate_location():
 	plt.setp(p1, linewidth=1, color="g")
 	p2 = plt.plot(numbers, error)
 	plt.setp(p2, linewidth=1, color="r")
-	plt.title("Average Zipcode Accuracy")
+	plt.title("Average Zipcode Performance")
 	plt.xlabel("Number of i3 Servers")
 	plt.ylabel("Accuracy (Green) / Relative Error (Red)")
 	plt.axis([3, total_num, 0, 1])
 	# plt.show()
-	plt.savefig(pp, format='pdf')
+	plt.savefig("Average_Zipcode_Performance.png")
 	
 	
 	
@@ -116,7 +116,7 @@ def evaluate_location():
 	plt.ylabel("Observed Accuracy (Green) / Fitted Accuracy (Black)")
 	plt.axis([3, len(accuracy)+3, 0, 1])
 	# plt.show()
-	plt.savefig(pp, format='pdf')
+	plt.savefig("Average_Zipcode_Accuracy.png")
 	
 	f1 = plt.figure(3)
 	p1 = plt.scatter(numbers, error)
@@ -128,7 +128,7 @@ def evaluate_location():
 	plt.ylabel("Observed Error (Red) / Fitted Error (Black)")
 	plt.axis([3, len(accuracy)+3, 0, 1])
 	# plt.show()
-	plt.savefig(pp, format='pdf')
+	plt.savefig("Average_Zipcode_Error.png")
 
 	return numbers, density, e_density
 
@@ -184,12 +184,12 @@ def evaluate_triangulate():
 	plt.setp(p1, linewidth=1, color="g")
 	p2 = plt.plot(numbers, error)
 	plt.setp(p2, linewidth=1, color="r")
-	plt.title("Average Triangulation Accuracy")
+	plt.title("Average Triangulation Performance")
 	plt.xlabel("Number of i3 Servers")
 	plt.ylabel("Accuracy (Green) / Relative Error (Red)")
 	plt.axis([3, total_num, 0, 1])
 	# plt.show()
-	plt.savefig(pp, format='pdf')
+	plt.savefig("Average_Triangulation_Performance.png")
 	
 	az = np.polyfit(numbers, accuracy, 2)
 	af = np.poly1d(az)
@@ -213,7 +213,7 @@ def evaluate_triangulate():
 	plt.ylabel("Observed Accuracy (Green) / Fitted Accuracy (Black)")
 	plt.axis([3, len(accuracy)+3, 0, 1])
 	# plt.show()
-	plt.savefig(pp, format='pdf')
+	plt.savefig("Average_Triangulation_Accuracy.png")
 	
 	f1 = plt.figure(6)
 	p1 = plt.scatter(numbers, error)
@@ -225,7 +225,7 @@ def evaluate_triangulate():
 	plt.ylabel("Observed Error (Red) / Fitted Error (Black)")
 	plt.axis([3, len(accuracy)+3, 0, 1])
 	# plt.show()
-	plt.savefig(pp, format='pdf')
+	plt.savefig("Average_Triangulation_Error.png")
 	
 	
 	return numbers, density, e_density
@@ -247,7 +247,7 @@ plt.xlabel("Number of i3 Servers")
 plt.ylabel("Accuracy")
 plt.axis([numbers[0], numbers[len(numbers)-1], 0, 1])
 # plt.show()
-plt.savefig(pp, format='pdf')
+plt.savefig("Average_Protocol_Accuracy.png")
 
 
 f1 = plt.figure(8)
@@ -260,9 +260,9 @@ plt.xlabel("Number of i3 Servers")
 plt.ylabel("Relative Error")
 plt.axis([numbers[0], numbers[len(numbers)-1], 0, 1])
 # plt.show()
-plt.savefig(pp, format='pdf')
+plt.savefig("Average_Protocol_Error.png")
 
-
+#plt.show()
 pp.close()
 
 
