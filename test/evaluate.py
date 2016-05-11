@@ -97,12 +97,12 @@ def evaluate_location():
 	
 	
 	
-	az = np.polyfit(numbers, accuracy, 2)
+	az = np.polyfit(numbers, accuracy, 3)
 	af = np.poly1d(az)
 	density = af(numbers)
 
 	
-	ez = np.polyfit(numbers, error, 2)
+	ez = np.polyfit(numbers, error, 3)
 	ef = np.poly1d(ez)
 	e_density = ef(numbers)
 	
@@ -191,12 +191,12 @@ def evaluate_triangulate():
 	# plt.show()
 	plt.savefig("Average_Triangulation_Performance.png")
 	
-	az = np.polyfit(numbers, accuracy, 2)
+	az = np.polyfit(numbers, accuracy, 3)
 	af = np.poly1d(az)
 	density = af(numbers)
 
 	
-	ez = np.polyfit(numbers, error, 2)
+	ez = np.polyfit(numbers, error, 3)
 	ef = np.poly1d(ez)
 	e_density = ef(numbers)
 	
