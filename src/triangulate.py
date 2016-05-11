@@ -60,9 +60,13 @@ class TriangulationNet:
 			return
 
 		cos1 = (d12*d12 + d13*d13 - d23*d23) / (2*d12*d13)
+
+		tria_inequality_holds = True
 		if cos1 > 1:
+			tria_inequality_holds = False
 			cos1 = 1
 		elif cos1 < -1:
+			tria_inequality_holds = False
 			cos1 = -1
 
 		theta = math.acos(cos1)
@@ -88,6 +92,8 @@ class TriangulationNet:
 		self.bootstraps.append(origin);
 		self.bootstraps.append(secondary);
 		self.bootstraps.append(ternary);
+
+		return tria_inequality_holds
 
 
 	def triangulate(self, times):
