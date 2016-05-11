@@ -16,10 +16,9 @@ def evaluate_location():
 	conn = parse.establish_db_connection()
 	cur = conn.cursor()
 
-	cfg = 1
+	accuracy = [0]*(len(configs["tests"][0]["servers"])-2)
+	error = [0]*(len(configs["tests"][0]["servers"])-2)
 	for config in configs["tests"]:
-		accuracy = []
-		error = []
 		clients = config['clients']
 		all_servers = config['servers']
 		total_num = len(all_servers)
@@ -27,10 +26,8 @@ def evaluate_location():
 		servers = all_servers[0:3]
 
 		all_servers = all_servers[3:len(all_servers)]
-		i = 3
-		numbers = []
-		accuracy = []
-		error = []
+		i = 0
+
 
 		correct = 0.0
 		e = 0.0
@@ -48,9 +45,9 @@ def evaluate_location():
 				correct = correct + 1
 			else:
 				e = e + (float(dist_min[3]) - float(actual_min[2])) / float(dist_min[3])
-		accuracy.append(correct / total)
-		error.append(e / total)
-		numbers.append(i)
+		accuracy[i] = accuracy[i] + (correct / total)
+		error[i] = error[i] + (e / total)
+		
 		i = i + 1
 
 
@@ -72,30 +69,111 @@ def evaluate_location():
 					correct = correct + 1
 				else:
 					e = e + (float(dist_min[3]) - float(actual_min[2])) / float(dist_min[3])
-			accuracy.append(correct / total)
-			error.append(e / total)
-			numbers.append(i)
+			accuracy[i] = accuracy[i] + (correct / total)
+			error[i] = error[i] + (e / total)
 			i = i+1
 
-		f1 = plt.figure(cfg)
-		p1 = plt.plot(numbers, accuracy)
-		plt.setp(p1, linewidth=5, color="g", linestyle='--')
-		p2 = plt.plot(numbers, error)
-		plt.setp(p2, linewidth=5, color="r", linestyle='--')
-		plt.title("Accuracy During Server Addition config: " + str(cfg))
-		plt.xlabel("Number of i3 Servers")
-		plt.ylabel("Accuracy (Green) / Relative Error (Red)")
-		plt.axis([3, total_num, 0, 1])
-		# plt.show()
-		plt.savefig(pp, format='pdf')
-		cfg = cfg + 1
+		
+	
+	numbers = range(3, len(accuracy)+3)
+	accuracy = [a / len(configs["tests"]) for a in accuracy]
+	error = [e / len(configs["tests"]) for e in error]
+	
+	f1 = plt.figure(1)
+	p1 = plt.plot(numbers, accuracy)
+	plt.setp(p1, linewidth=1, color="g")
+	p2 = plt.plot(numbers, error)
+	plt.setp(p2, linewidth=1, color="r")
+	plt.title("Average Zipcode Accuracy")
+	plt.xlabel("Number of i3 Servers")
+	plt.ylabel("Accuracy (Green) / Relative Error (Red)")
+	plt.axis([3, total_num, 0, 1])
+	# plt.show()
+	plt.savefig(pp, format='pdf')
+	
+	
+	
+	az = np.polyfit(numbers, accuracy, 2)
+	af = np.poly1d(az)
+	density = af(numbers)
+
+	
+	ez = np.polyfit(numbers, error, 2)
+	ef = np.poly1d(ez)
+	e_density = ef(numbers)
+	
+	f1 = plt.figure(2)
+	p1 = plt.scatter(numbers, accuracy)
+	plt.setp(p1, linewidth=1, color="g")
+	p2 = plt.plot(numbers, density)
+	plt.setp(p2, linewidth=1, color="k")
+	plt.title("Average Zipcode Accuracy")
+	plt.xlabel("Number of i3 Servers")
+	plt.ylabel("Observed Accuracy (Green) / Fitted Accuracy (Black)")
+	plt.axis([3, len(accuracy)+3, 0, 1])
+	# plt.show()
+	plt.savefig(pp, format='pdf')
+	
+	f1 = plt.figure(3)
+	p1 = plt.scatter(numbers, error)
+	plt.setp(p1, linewidth=1, color="r")
+	p2 = plt.plot(numbers, e_density)
+	plt.setp(p2, linewidth=1, color="k")
+	plt.title("Average Zipcode Error")
+	plt.xlabel("Number of i3 Servers")
+	plt.ylabel("Observed Error (Red) / Fitted Error (Black)")
+	plt.axis([3, len(accuracy)+3, 0, 1])
+	# plt.show()
+	plt.savefig(pp, format='pdf')
 
 	pp.close()
+	
+	return af, ef
 
 evaluate_location()
 
 
 
+"""
 
+total_a = sum(accuracy)
+	accuracy = [a / total_a for a in accuracy]
+	
+	density = np.zeros(48)
+	smallest = 1000000000
+	best = -1
+	possible = np.linspace(.01, .99, 100)
+	for p in possible:
+		for i in numbers:
+			density[i-3] = p*((1-p)**(i-3))
+		diff = np.linalg.norm(accuracy - density)
+		if diff < smallest:
+			smallest = diff
+			best = p
+	
+
+	p=best
+	for i in numbers:
+		density[i-3] = total_a*p*((1-p)**(i-3))
+	accuracy = [a * total_a for a in accuracy]
+
+
+	e_density = np.zeros(48)
+	smallest = 1000000000
+	best = -1
+	possible = np.linspace(.01, .99, 100)
+	for p in possible:
+		for i in numbers:
+			e_density[i-3] = 1-((1-p)**(i-2))
+		diff = np.linalg.norm(error - e_density)
+		if diff < smallest:
+			smallest = diff
+			best = p
+	
+
+	p=best
+	for i in numbers:
+		e_density[i-3] = (1-((1-p)**(i-2)))
+"""
 
 
