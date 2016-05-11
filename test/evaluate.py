@@ -58,10 +58,10 @@ def evaluate_triangulate():
 	
 	f1 = plt.figure(1)
 	p1 = plt.plot(numbers, accuracy)
-	plt.setp(p1, linewidth=2, color="g")
+	plt.setp(p1, linewidth=1, color="g")
 	p2 = plt.plot(numbers, error)
-	plt.setp(p2, linewidth=2, color="r")
-	plt.title("Average Accuracy During Server Addition")
+	plt.setp(p2, linewidth=1, color="r")
+	plt.title("Average Triangulation Accuracy")
 	plt.xlabel("Number of i3 Servers")
 	plt.ylabel("Accuracy (Green) / Relative Error (Red)")
 	plt.axis([3, total_num, 0, 1])
@@ -85,21 +85,46 @@ def evaluate_triangulate():
 		if diff < smallest:
 			smallest = diff
 			best = p
-			mypdf = density
 	
 
 	p=best
 	for i in numbers:
 		density[i-3] = total_a*p*((1-p)**(i-3))
 	accuracy = [a * total_a for a in accuracy]
+	
+	print(error)
+	
+	#total_e = sum(error)
+	#error = [e / total_e for e in error]
+	
+	e_density = np.zeros(48)
+	smallest = 1000000000
+	best = -1
+	possible = np.linspace(.01, .99, 100)
+	for p in possible:
+		for i in numbers:
+			e_density[i-3] = 1-((1-p)**(i-2))
+		diff = np.linalg.norm(error - e_density)
+		if diff < smallest:
+			smallest = diff
+			best = p
+	
+
+	p=best
+	for i in numbers:
+		e_density[i-3] = (1-((1-p)**(i-2)))
+	#error = [e * total_e for e in error]
+	
+	
+	
 	f1 = plt.figure(2)
-	p1 = plt.scatter(numbers, accuracy)
-	plt.setp(p1, linewidth=5, color="g")
-	p2 = plt.plot(numbers, mypdf)
-	plt.setp(p2, linewidth=1, color="g")
-	plt.title("Average Accuracy")
+	p1 = plt.plot(numbers, density)
+	plt.setp(p1, linewidth=1, color="g")
+	p2 = plt.plot(numbers, e_density)
+	plt.setp(p2, linewidth=1, color="r")
+	plt.title("Average Triangulation Accuracy")
 	plt.xlabel("Number of i3 Servers")
-	plt.ylabel("Observed (Scatter) / Geometric Fit (Line)")
+	plt.ylabel("Fitted Accuracy (Green) / Fitted Error (Red)")
 	plt.axis([3, len(accuracy)+3, 0, 1])
 	# plt.show()
 	plt.savefig(pp, format='pdf')
